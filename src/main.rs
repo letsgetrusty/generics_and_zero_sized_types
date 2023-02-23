@@ -1,6 +1,7 @@
 #![allow(unused)]
 
 use std::collections::HashMap;
+use std::marker::PhantomData;
 
 struct Locked;
 struct Unlocked;
@@ -10,7 +11,7 @@ struct Unlocked;
 struct PasswordManager<State = Locked> {
     master_pass: String,
     passwords: HashMap<String, String>,
-    state: std::marker::PhantomData<State>,
+    state: PhantomData<State>,
 }
 
 impl PasswordManager<Locked> {
@@ -18,7 +19,7 @@ impl PasswordManager<Locked> {
         PasswordManager {
             master_pass: self.master_pass,
             passwords: self.passwords,
-            state: std::marker::PhantomData::<Unlocked>,
+            state: PhantomData,
         }
     }
 }
@@ -28,7 +29,7 @@ impl PasswordManager<Unlocked> {
         PasswordManager {
             master_pass: self.master_pass,
             passwords: self.passwords,
-            state: std::marker::PhantomData::<Locked>,
+            state: PhantomData,
         }
     }
 
@@ -56,7 +57,7 @@ impl PasswordManager {
         PasswordManager {
             master_pass,
             passwords: Default::default(),
-            state: Default::default(),
+            state: PhantomData,
         }
     }
 }
