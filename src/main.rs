@@ -24,11 +24,11 @@ impl PasswordManager<Locked> {
 }
 
 impl PasswordManager<Unlocked> {
-    pub fn lock(self) -> PasswordManager<Unlocked> {
+    pub fn lock(self) -> PasswordManager<Locked> {
         PasswordManager {
             master_pass: self.master_pass,
             passwords: self.passwords,
-            state: std::marker::PhantomData::<Unlocked>,
+            state: std::marker::PhantomData::<Locked>,
         }
     }
 
