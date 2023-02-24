@@ -1,35 +1,28 @@
 #![allow(unused)]
 
 use std::collections::HashMap;
-use std::marker::PhantomData;
-
-struct Locked;
-struct Unlocked;
 
 // PasswordManager<Locked> != PasswordManager<Unlocked>
 
-struct PasswordManager<State = Locked> {
+pub struct PasswordManager<const LOCKED: bool = true> {
     master_pass: String,
     passwords: HashMap<String, String>,
-    state: PhantomData<State>,
 }
 
-impl PasswordManager<Locked> {
-    pub fn unlock(self, master_pass: String) -> PasswordManager<Unlocked> {
+impl PasswordManager<true> {
+    pub fn unlock(self, master_pass: String) -> PasswordManager<false> {
         PasswordManager {
             master_pass: self.master_pass,
             passwords: self.passwords,
-            state: PhantomData,
         }
     }
 }
 
-impl PasswordManager<Unlocked> {
-    pub fn lock(self) -> PasswordManager<Locked> {
+impl PasswordManager<false> {
+    pub fn lock(self) -> PasswordManager<true> {
         PasswordManager {
             master_pass: self.master_pass,
             passwords: self.passwords,
-            state: PhantomData,
         }
     }
 
@@ -42,7 +35,7 @@ impl PasswordManager<Unlocked> {
     }
 }
 
-impl<State> PasswordManager<State> {
+impl<const STATE: bool> PasswordManager<STATE> {
     pub fn encryption(&self) -> String {
         todo!()
     }
@@ -57,7 +50,6 @@ impl PasswordManager {
         PasswordManager {
             master_pass,
             passwords: Default::default(),
-            state: PhantomData,
         }
     }
 }
